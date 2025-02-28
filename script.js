@@ -1,51 +1,45 @@
-let cliques = 0; // Contador de cliques
-let saiu20 = false; // Flag para saber se o número 20 já saiu nesta rodada
-let numerosSorteados = []; // Lista para armazenar os números já sorteados
-let ultimoNumero = null; // Variável para armazenar o último número sorteado
-let modoAleatorio = false; // Ativa quando os cliques ultrapassam 20 e aguarda sair o 20
+let cliques = 0;
+let numerosSorteados = [];
+let bafometroCooldown = 0; // Contador para evitar repetição nos últimos 10 números
+let ultimoBafometro = 0; // Guarda a última posição do bafômetro
 
 function gerarNumeroUnico() {
     let numero;
-    let numerosPossiveis = Array.from({ length: 20 }, (_, i) => i + 1).filter(n => 
-        !numerosSorteados.includes(n) && !(n === 20 && ultimoNumero === 20) // Evita dois 20 seguidos
-    );
-
-    if (numerosPossiveis.length === 0) {
-        numerosSorteados = []; // Reinicia a lista quando todos os números forem usados
-        return gerarNumeroUnico();
-    }
-
+    let numerosPossiveis = Array.from({ length: 20 }, (_, i) => i + 1);
+    
     let indice = Math.floor(Math.random() * numerosPossiveis.length);
     numero = numerosPossiveis[indice];
-
-    numerosSorteados.push(numero);
+    
     return numero;
 }
 
 document.getElementById('btnAleatorizar').addEventListener('click', function() {
     cliques++;
-    let numeroAleatorio;
-
-    if (modoAleatorio) {
-        numeroAleatorio = gerarNumeroUnico();
-        if (numeroAleatorio === 20) {
-            modoAleatorio = false; // Sai do modo aleatório ao sortear 20
-            cliques = 0;
-            numerosSorteados = [];
-        }
-    } else {
-        if (cliques >= 20) {
-            modoAleatorio = true; // Ativa o modo aleatório após 20 cliques
-            numeroAleatorio = gerarNumeroUnico();
-        } else {
-            numeroAleatorio = gerarNumeroUnico();
-            if (numeroAleatorio === 20) {
-                saiu20 = true;
-            }
+    let numeroAleatorio = gerarNumeroUnico();
+    
+    // Define chance de acionamento aleatório do bafômetro, mantendo a proporção de 1 para 30
+    let chanceBafometro = Math.random() < 1 / 35;
+    
+    // Garante que o bafômetro saia no máximo a cada 30 cliques e não se repita nos últimos 10 números
+    if ((cliques - ultimoBafometro >= 35) || (chanceBafometro && bafometroCooldown === 0)) {
+        numeroAleatorio = 20;
+        ultimoBafometro = cliques;
+        bafometroCooldown = 15; // Impede que o 20 saia nos próximos 10 números
+    } else if (bafometroCooldown > 0 && numeroAleatorio === 20) {
+        while (numeroAleatorio === 20) {
+            numeroAleatorio = gerarNumeroUnico(); // Evita repetição do bafômetro em curto prazo
         }
     }
+    
+    if (bafometroCooldown > 0) {
+        bafometroCooldown--;
+    }
+    
+    numerosSorteados.push(numeroAleatorio);
+    if (numerosSorteados.length > 30) {
+        numerosSorteados.shift(); // Mantém apenas os últimos 30 números
+    }
 
-    ultimoNumero = numeroAleatorio;
     const resultadoDiv = document.getElementById('resultado');
     const alarme = document.getElementById('alarme');
 
