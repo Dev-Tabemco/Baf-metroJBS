@@ -1,57 +1,60 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BAFÔMETRO</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            background-color: #f4f4f4;
-            text-align: center;
-        }
-        button {
-            padding: 20px 40px;
-            font-size: 28px;
-            cursor: pointer;
-        }
-        #resultado {
-            margin-top: 20px;
-            font-size: 48px;
-            color: #333;
-        }
-        .alerta {
-            color: red;
-            font-weight: bold;
-        }
-        .liberado {
-            color: green;
-            font-weight: bold;
-        }
-        img {
-            width: 300px;
-            margin-bottom: 10px;
-        }
-    </style>
-</head>
-<body>
+let cliques = 0; // Contador de cliques
+let saiu20 = false; // Flag para saber se o número 20 já saiu nesta rodada
+let numerosSorteados = []; // Lista para armazenar os números já sorteados
+let ultimoNumero = null; // Variável para armazenar o último número sorteado
 
-    <img src="https://jbsterminais.com.br/wp-content/uploads/2024/09/JBSTERMINAIS-LOGO.PNG" alt="Logo ou Ícone">
-    <h1>Teste Bafômetro</h1>
-    <button id="btnAleatorizar">CLIQUE</button>
-    <div id="resultado"></div>
+function gerarNumeroUnico() {
+    let numero;
+    let numerosPossiveis = Array.from({ length: 20 }, (_, i) => i + 1).filter(n => !numerosSorteados.includes(n));
+    
+    if (numerosPossiveis.length === 0) {
+        numerosSorteados = []; // Reinicia a lista quando todos os números forem usados
+        return gerarNumeroUnico();
+    }
+    
+    let indice = Math.floor(Math.random() * numerosPossiveis.length);
+    numero = numerosPossiveis[indice];
+    
+    // Garante que o 20 não saia duas vezes seguidas
+    if (numero === 20 && ultimoNumero === 20) {
+        return gerarNumeroUnico();
+    }
+    
+    numerosSorteados.push(numero);
+    ultimoNumero = numero;
+    return numero;
+}
 
-    <!-- Novo áudio de alarme confiável -->
-    <audio id="alarme">
-        <source src="https://www.myinstants.com/media/sounds/alert.mp3" type="audio/mpeg">
-        Seu navegador não suporta áudio.
-    </audio>
+document.getElementById('btnAleatorizar').addEventListener('click', function() {
+    cliques++;
+    let numeroAleatorio;
 
-    <script src="script.js"></script>
-</body>
-</html>
+    // Se for o 20º clique e ainda não saiu o 20, forçamos ele
+    if (cliques >= 20 || saiu20) {
+        numeroAleatorio = 20;
+        saiu20 = false; // Marca que já saiu
+        cliques = 0; // Reseta a contagem para nova rodada
+        numerosSorteados = []; // Reinicia a lista de números sorteados
+    } else {
+        numeroAleatorio = gerarNumeroUnico();
+        if (numeroAleatorio === 20) {
+            saiu20 = true; // Marca que o 20 já saiu
+        }
+    }
+
+    const resultadoDiv = document.getElementById('resultado');
+    const alarme = document.getElementById('alarme');
+
+    if (numeroAleatorio === 20) {
+        resultadoDiv.innerHTML = `<span class="alerta">Resultado: ${numeroAleatorio} 🚨 - TESTE DO BAFÔMETRO OBRIGATÓRIO! 🚨</span>`;
+        
+        // Toca o alarme
+        alarme.pause();
+        alarme.currentTime = 0;
+        alarme.play().catch(error => {
+            console.error("Erro ao reproduzir o som:", error);
+        });
+    } else {
+        resultadoDiv.innerHTML = `<span class="liberado">Resultado: ${numeroAleatorio} ✅ - LIBERADO</span>`;
+    }
+});
