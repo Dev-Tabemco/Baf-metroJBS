@@ -5,7 +5,7 @@ let ultimoNumero = null; // Variável para armazenar o último número sorteado
 
 function gerarNumeroUnico() {
     let numero;
-    let numerosPossiveis = Array.from({ length: 20 }, (_, i) => i + 1).filter(n => !numerosSorteados.includes(n));
+    let numerosPossiveis = Array.from({ length: 20 }, (_, i) => i + 1).filter(n => !numerosSorteados.includes(n) && n !== 20);
     
     if (numerosPossiveis.length === 0) {
         numerosSorteados = []; // Reinicia a lista quando todos os números forem usados
@@ -14,11 +14,6 @@ function gerarNumeroUnico() {
     
     let indice = Math.floor(Math.random() * numerosPossiveis.length);
     numero = numerosPossiveis[indice];
-    
-    // Garante que o 20 não saia duas vezes seguidas
-    if (numero === 20 && ultimoNumero === 20) {
-        return gerarNumeroUnico();
-    }
     
     numerosSorteados.push(numero);
     ultimoNumero = numero;
@@ -31,10 +26,14 @@ document.getElementById('btnAleatorizar').addEventListener('click', function() {
 
     // Se for o 20º clique e ainda não saiu o 20, forçamos ele
     if (cliques >= 20 || saiu20) {
-        numeroAleatorio = 20;
-        saiu20 = false; // Marca que já saiu
-        cliques = 0; // Reseta a contagem para nova rodada
-        numerosSorteados = []; // Reinicia a lista de números sorteados
+        if (ultimoNumero === 20) {
+            numeroAleatorio = gerarNumeroUnico(); // Garante que o próximo não seja 20
+        } else {
+            numeroAleatorio = 20;
+            saiu20 = false; // Marca que já saiu
+            cliques = 0; // Reseta a contagem para nova rodada
+            numerosSorteados = []; // Reinicia a lista de números sorteados
+        }
     } else {
         numeroAleatorio = gerarNumeroUnico();
         if (numeroAleatorio === 20) {
@@ -42,6 +41,7 @@ document.getElementById('btnAleatorizar').addEventListener('click', function() {
         }
     }
 
+    ultimoNumero = numeroAleatorio; // Atualiza o último número sorteado
     const resultadoDiv = document.getElementById('resultado');
     const alarme = document.getElementById('alarme');
 
