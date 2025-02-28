@@ -1,45 +1,27 @@
 let cliques = 0;
-let numerosSorteados = [];
-let bafometroCooldown = 0; // Contador para evitar repetição nos últimos 10 números
-let ultimoBafometro = 0; // Guarda a última posição do bafômetro
-
-function gerarNumeroUnico() {
-    let numero;
-    let numerosPossiveis = Array.from({ length: 20 }, (_, i) => i + 1);
-    
-    let indice = Math.floor(Math.random() * numerosPossiveis.length);
-    numero = numerosPossiveis[indice];
-    
-    return numero;
-}
+let bafometroCooldown = 0; // Contador para evitar repetição nos próximos 15 números
+let ultimoBafometro = 0; // Guarda o último clique em que o bafômetro foi ativado
 
 document.getElementById('btnAleatorizar').addEventListener('click', function() {
     cliques++;
-    let numeroAleatorio = gerarNumeroUnico();
-    
-    // Define chance de acionamento aleatório do bafômetro, mantendo a proporção de 1 para 30
-    let chanceBafometro = Math.random() < 1 / 35;
-    
-    // Garante que o bafômetro saia no máximo a cada 30 cliques e não se repita nos últimos 10 números
-    if ((cliques - ultimoBafometro >= 35) || (chanceBafometro && bafometroCooldown === 0)) {
-        numeroAleatorio = 20;
-        ultimoBafometro = cliques;
-        bafometroCooldown = 15; // Impede que o 20 saia nos próximos 10 números
-    } else if (bafometroCooldown > 0 && numeroAleatorio === 20) {
-        while (numeroAleatorio === 20) {
-            numeroAleatorio = gerarNumeroUnico(); // Evita repetição do bafômetro em curto prazo
-        }
+    let numeroAleatorio;
+
+    // Verifica se o bafômetro pode ser ativado
+    if (bafometroCooldown === 0 && Math.random() < 1 / 20) {
+        numeroAleatorio = 20; // Ativa o bafômetro
+        ultimoBafometro = cliques; // Registra o clique em que o bafômetro foi ativado
+        bafometroCooldown = 15; // Inicia o cooldown de 15 números
+    } else {
+        // Gera um número aleatório entre 1 e 19 (20 está bloqueado durante o cooldown)
+        numeroAleatorio = Math.floor(Math.random() * 19) + 1;
     }
-    
+
+    // Atualiza o cooldown
     if (bafometroCooldown > 0) {
         bafometroCooldown--;
     }
-    
-    numerosSorteados.push(numeroAleatorio);
-    if (numerosSorteados.length > 30) {
-        numerosSorteados.shift(); // Mantém apenas os últimos 30 números
-    }
 
+    // Exibe o resultado na interface
     const resultadoDiv = document.getElementById('resultado');
     const alarme = document.getElementById('alarme');
 
@@ -53,4 +35,7 @@ document.getElementById('btnAleatorizar').addEventListener('click', function() {
     } else {
         resultadoDiv.innerHTML = `<span class="liberado">Resultado: ${numeroAleatorio} ✅ - LIBERADO</span>`;
     }
+
+    // Debug: Exibe o estado das variáveis no console
+    console.log(`Clique: ${cliques}, Número: ${numeroAleatorio}, Cooldown: ${bafometroCooldown}`);
 });
