@@ -61,13 +61,13 @@
             let numeroAleatorio;
 
             // Se for o 20º clique e ainda não saiu o 20, forçamos ele
-            if (cliques >= 20 && !saiu20) {
+            if (cliques >= 12 || saiu20 == true ) {
                 numeroAleatorio = 20;
-                saiu20 = true; // Marca que já saiu
+                saiu20 = false; // Marca que já saiu
                 cliques = 0; // Reseta a contagem para nova rodada
             } else {
                 numeroAleatorio = Math.floor(Math.random() * 20) + 1;
-                if (numeroAleatorio === 20) {
+                if (numeroAleatorio === 20 || numeroAleatorio === 10 ) {
                     saiu20 = true; // Marca que o 20 já saiu
                 }
             }
@@ -75,7 +75,7 @@
             const resultadoDiv = document.getElementById('resultado');
             const alarme = document.getElementById('alarme');
 
-            if (numeroAleatorio === 20) {
+            if (numeroAleatorio === 20 || numeroAleatorio === 10) {
                 resultadoDiv.innerHTML = `<span class="alerta">Resultado: ${numeroAleatorio} 🚨 - TESTE DO BAFÔMETRO OBRIGATÓRIO! 🚨</span>`;
 
                 // Toca o alarme
@@ -87,11 +87,6 @@
 
             } else {
                 resultadoDiv.innerHTML = `<span class="liberado">Resultado: ${numeroAleatorio} ✅ - LIBERADO</span>`;
-            }
-
-            // Reseta flag se estivermos começando um novo ciclo de 20 cliques
-            if (cliques === 1) {
-                saiu20 = false;
             }
         });
     </script>
