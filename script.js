@@ -5,18 +5,19 @@ let ultimoNumero = null; // Variável para armazenar o último número sorteado
 
 function gerarNumeroUnico() {
     let numero;
-    let numerosPossiveis = Array.from({ length: 20 }, (_, i) => i + 1).filter(n => !numerosSorteados.includes(n) && n !== 20);
-    
+    let numerosPossiveis = Array.from({ length: 20 }, (_, i) => i + 1).filter(n => 
+        !numerosSorteados.includes(n) && !(n === 20 && ultimoNumero === 20) // Evita dois 20 seguidos
+    );
+
     if (numerosPossiveis.length === 0) {
         numerosSorteados = []; // Reinicia a lista quando todos os números forem usados
         return gerarNumeroUnico();
     }
-    
+
     let indice = Math.floor(Math.random() * numerosPossiveis.length);
     numero = numerosPossiveis[indice];
-    
+
     numerosSorteados.push(numero);
-    ultimoNumero = numero;
     return numero;
 }
 
