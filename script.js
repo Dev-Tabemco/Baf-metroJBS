@@ -2,6 +2,7 @@ let cliques = 0; // Contador de cliques
 let saiu20 = false; // Flag para saber se o número 20 já saiu nesta rodada
 let numerosSorteados = []; // Lista para armazenar os números já sorteados
 let ultimoNumero = null; // Variável para armazenar o último número sorteado
+let modoAleatorio = false; // Ativa quando os cliques ultrapassam 20 e aguarda sair o 20
 
 function gerarNumeroUnico() {
     let numero;
@@ -25,31 +26,31 @@ document.getElementById('btnAleatorizar').addEventListener('click', function() {
     cliques++;
     let numeroAleatorio;
 
-    // Se for o 20º clique e ainda não saiu o 20, forçamos ele
-    if (cliques >= 20 || saiu20) {
-        if (ultimoNumero === 20) {
-            numeroAleatorio = gerarNumeroUnico(); // Garante que o próximo não seja 20
-        } else {
-            numeroAleatorio = 20;
-            saiu20 = false; // Marca que já saiu
-            cliques = 0; // Reseta a contagem para nova rodada
-            numerosSorteados = []; // Reinicia a lista de números sorteados
-        }
-    } else {
+    if (modoAleatorio) {
         numeroAleatorio = gerarNumeroUnico();
         if (numeroAleatorio === 20) {
-            saiu20 = true; // Marca que o 20 já saiu
+            modoAleatorio = false; // Sai do modo aleatório ao sortear 20
+            cliques = 0;
+            numerosSorteados = [];
+        }
+    } else {
+        if (cliques >= 20) {
+            modoAleatorio = true; // Ativa o modo aleatório após 20 cliques
+            numeroAleatorio = gerarNumeroUnico();
+        } else {
+            numeroAleatorio = gerarNumeroUnico();
+            if (numeroAleatorio === 20) {
+                saiu20 = true;
+            }
         }
     }
 
-    ultimoNumero = numeroAleatorio; // Atualiza o último número sorteado
+    ultimoNumero = numeroAleatorio;
     const resultadoDiv = document.getElementById('resultado');
     const alarme = document.getElementById('alarme');
 
     if (numeroAleatorio === 20) {
         resultadoDiv.innerHTML = `<span class="alerta">Resultado: ${numeroAleatorio} 🚨 - TESTE DO BAFÔMETRO OBRIGATÓRIO! 🚨</span>`;
-        
-        // Toca o alarme
         alarme.pause();
         alarme.currentTime = 0;
         alarme.play().catch(error => {
