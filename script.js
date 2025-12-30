@@ -11,12 +11,15 @@ document.getElementById('btnAleatorizar').addEventListener('click', function() {
         numeroAleatorio = 20; // Ativa o bafômetro
         ultimoBafometro = cliques; // Registra o clique em que o bafômetro foi ativado
         bafometroCooldown = 10; // Inicia o cooldown de 10 números
+
     } else {
         // Gera um número aleatório entre 1 e 19 (20 está bloqueado durante o cooldown)
         numeroAleatorio = Math.floor(Math.random() * 19) + 1;
     }
 
-    // Atualiza o cooldowncs1c6s1c65scs
+
+
+    // Atualiza o cooldown
     if (bafometroCooldown > 0) {
         bafometroCooldown--;
     }
@@ -27,6 +30,9 @@ document.getElementById('btnAleatorizar').addEventListener('click', function() {
 
     if (numeroAleatorio === 20) {
         resultadoDiv.innerHTML = `<span class="alerta">Resultado: ${numeroAleatorio} 🚨 - TESTE DO BAFÔMETRO OBRIGATÓRIO! 🚨</span>`;
+
+        alarme.pause();
+
         alarme.currentTime = 0;
         alarme.play().catch(error => {
             console.error("Erro ao reproduzir o som:", error);
