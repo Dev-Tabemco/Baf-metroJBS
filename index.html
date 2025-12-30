@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BAFÔMETRO</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+        button {
+            padding: 20px 40px;
+            font-size: 28px;
+            cursor: pointer;
+        }
+        #resultado {
+            margin-top: 20px;
+            font-size: 48px;
+            color: #333;
+        }
+        .alerta {
+            color: red;
+            font-weight: bold;
+        }
+        .liberado {
+            color: green;
+            font-weight: bold;
+        }
+        img {
+            width: 300px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <img src="https://jbsterminais.com.br/wp-content/uploads/2024/09/JBSTERMINAIS-LOGO.PNG" alt="Logo ou Ícone">
+    <h1>Teste Bafômetro</h1>
+    <button id="btnAleatorizar">CLIQUE</button>
+    <div id="resultado"></div>
+
+    <!-- Novo áudio de alarme confiável -->
+    <audio id="alarme">
+        <source src="https://www.myinstants.com/media/sounds/alert.mp3" type="audio/mpeg">
+        Seu navegador não suporta áudio.
+    </audio>
+
+    <script src="script.js"></script>
+</body>
+</html>
