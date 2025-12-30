@@ -16,7 +16,7 @@ document.getElementById('btnAleatorizar').addEventListener('click', function() {
         numeroAleatorio = Math.floor(Math.random() * 19) + 1;
     }
 
-    // Atualiza o cooldown
+    // Atualiza o cooldowncs1c6s1c65scs
     if (bafometroCooldown > 0) {
         bafometroCooldown--;
     }
