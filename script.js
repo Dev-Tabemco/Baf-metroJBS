@@ -10,7 +10,7 @@ document.getElementById('btnAleatorizar').addEventListener('click', function() {
     if (bafometroCooldown === 0 && Math.random() < 1 / 20) {
         numeroAleatorio = 20; // Ativa o bafômetro
         ultimoBafometro = cliques; // Registra o clique em que o bafômetro foi ativado
-        bafometroCooldown = 10; // Inicia o cooldown de 10 números
+        bafometroCooldown = 2; // Inicia o cooldown de 2 números
 
     } else {
         // Gera um número aleatório entre 1 e 19 (20 está bloqueado durante o cooldown)
