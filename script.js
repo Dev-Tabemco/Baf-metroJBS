@@ -14,7 +14,7 @@ document.getElementById('btnAleatorizar').addEventListener('click', function () 
         bafometroCooldown === 0 &&
         (
             Math.random() < 1 / 4 ||     // chance normal
-            cliquesDesdeUltimo >= 15     // garantia máxima agora é 15
+            cliquesDesdeUltimo >= 5     // garantia máxima agora é 15
         )
     ) {
         // Ativadores: 1 ou 10
